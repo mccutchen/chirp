@@ -41,7 +41,16 @@ import re
 import sys
 import urllib
 
-from django.utils import simplejson as json
+try:
+    import json
+except ImportError:
+    try:
+        import simplejson as json
+    except ImportError:
+        try:
+            from django.utils import simplejson
+        except ImportError:
+            raise ImportError, 'Unable to load a json library'
 
 
 API_HOST = 'api.twitter.com'
