@@ -59,13 +59,17 @@ class ChirpTests(unittest.TestCase):
     def test_public_twitter_api_with_params(self):
         resp = self.api.statuses.public_timeline.get(trim_user=True)
         self.assertEqual(len(resp), 20)
-        self.assertTrue(isinstance(resp[0]['user']['id'], (int,long)))
+        self.assertTrue(isinstance(resp[0].user.id, (int,long)))
 
     def test_private_twitter_api(self):
         self.assertRaises(
             chirp.TwitterError,
             self.api.statuses.update.post, status='Hello?')
 
+    def test_custom_json_parsing(self):
+        resp = self.api.statuses.show(43353108109197312).get()
+        self.assertEqual(type(resp), chirp.AttrDict)
+        self.assertEqual(type(resp.user), chirp.AttrDict)
 
 if __name__ == '__main__':
     unittest.main()

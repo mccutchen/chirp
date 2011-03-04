@@ -86,6 +86,19 @@ class TwitterError(Exception):
     pass
 
 
+class AttrDict(dict):
+    """A dict subclass that allows access to keys via normal item access and
+    via attribute access.  E.g. d['key'] == d.key.
+    """
+    def __getattr__(self, name):
+        if name not in self:
+            return super(AttrDict, self).__getattr__(name)
+        return self[name]
+
+    def __repr__(self):
+        return 'AttrDict(%s)' % super(AttrDict, self).__repr__()
+
+
 ##############################################################################
 # Helper functions
 ##############################################################################
@@ -131,7 +144,7 @@ def make_request(method, url, body, headers=None, parse_json=True):
     if resp.status != 200:
         raise TwitterError('Bad Response: %s %s' % (resp.status, resp.reason))
     if parse_json:
-        return json.load(resp)
+        return json.load(resp, object_hook=AttrDict)
     else:
         return resp.read()
 
