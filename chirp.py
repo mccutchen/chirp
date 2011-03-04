@@ -58,7 +58,7 @@ class TwitterAPI(object):
         return self(name)
 
     def __call__(self, name):
-        return TwitterAPI(self.paths + (name,))
+        return TwitterAPI(self.paths + (str(name),))
 
     def get(self, **kwargs):
         return self._request('get', **kwargs)
